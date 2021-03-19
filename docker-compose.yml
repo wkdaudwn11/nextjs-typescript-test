@@ -3,6 +3,8 @@ services:
   nextjs:
     build: ./
   nginx:
-    build: ./nginx
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
       - 80:80

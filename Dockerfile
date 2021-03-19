@@ -8,7 +8,9 @@ RUN npm install
 # RUN rm -r node_modules/terser
 # RUN npm install terser@3.14.1 --save-dev
 COPY . /app
-RUN npm run build && npm start
+RUN npm run build
+EXPOSE 3000
+CMD ["npm", "start"]
 
 # Production environment
 FROM nginx:1.16.0-alpine

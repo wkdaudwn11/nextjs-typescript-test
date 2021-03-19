@@ -1,20 +1,47 @@
-# Build environment
-FROM node:12.8.0 as builder
-WORKDIR /app
-ENV PATH /app/node_modules/.bin:$PATH
-COPY . /app
-RUN npm install
-# RUN npm install react-scripts@3.4.0 -g --silent
-# RUN rm -r node_modules/terser
-# RUN npm install terser@3.14.1 --save-dev
-RUN npm run build
-EXPOSE 3000
-RUN npm start
+# Base on offical Node.js Alpine image
+FROM node:alpine
 
-# Production environment
-FROM nginx:1.16.0-alpine
-# COPY --from=builder /app/next /usr/share/nginx/html
-RUN rm -rf /etc/nginx/conf.d
-COPY conf /etc/nginx
+# Set working directory
+WORKDIR /usr/app
+
+# Install PM2 globally
+RUN npm install --global pm2
+
+# Copy package.json and package-lock.json before other files
+# Utilise Docker cache to save re-installing dependencies if unchanged
+COPY ./package*.json ./
+
+# Install dependencies
+RUN npm install --production
+
+# Copy all files
+COPY ./ ./
+
+# Build app
+RUN npm run build
+
+# Expose the listening port
+EXPOSE 3000
+
+# Run container as non-root (unprivileged) user
+# The node user is provided in the Node.js Alpine base image
+USER node
+
+# Run npm start script with PM2 when container starts
+CMD [ "pm2-runtime", "npm", "--", "start" ]
+
+# Base on offical NGINX Alpine image
+FROM nginx:alpine
+
+# Remove any existing config files
+RUN rm /etc/nginx/conf.d/*
+
+# Copy config files
+# *.conf files in conf.d/ dir get included in main config
+COPY ./default.conf /etc/nginx/conf.d/
+
+# Expose the listening port
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+# Launch NGINX
+CMD [ "nginx", "-g", "daemon off;" ]

@@ -2,12 +2,11 @@
 FROM node:12.8.0 as builder
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
-# COPY build /app/build
+COPY . /app
 RUN npm install
 # RUN npm install react-scripts@3.4.0 -g --silent
 # RUN rm -r node_modules/terser
 # RUN npm install terser@3.14.1 --save-dev
-COPY . /app
 RUN npm run build
 EXPOSE 3000
 CMD ["npm", "start"]

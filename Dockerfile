@@ -30,18 +30,11 @@ USER node
 # Run npm start script with PM2 when container starts
 CMD [ "pm2-runtime", "npm", "--", "start" ]
 
-# Base on offical NGINX Alpine image
+
+# Production environment
 FROM nginx:alpine
-
-# Remove any existing config files
-RUN rm /etc/nginx/conf.d/*
-
-# Copy config files
-# *.conf files in conf.d/ dir get included in main config
-COPY ./default.conf /etc/nginx/conf.d/
-
-# Expose the listening port
+# COPY --from=builder /app/next /usr/share/nginx/html
+RUN rm -rf /etc/nginx/conf.d
+COPY conf /etc/nginx
 EXPOSE 80
-
-# Launch NGINX
-CMD [ "nginx", "-g", "daemon off;" ]
+CMD ["nginx", "-g", "daemon off;"]

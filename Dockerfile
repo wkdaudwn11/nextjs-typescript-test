@@ -9,7 +9,7 @@ RUN npm install
 # RUN npm install terser@3.14.1 --save-dev
 RUN npm run build
 EXPOSE 3000
-CMD ["npm", "start"]
+RUN npm start
 
 # Production environment
 FROM nginx:1.16.0-alpine

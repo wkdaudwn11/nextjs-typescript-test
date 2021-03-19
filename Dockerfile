@@ -15,6 +15,6 @@ CMD ["npm", "start"]
 FROM nginx:1.16.0-alpine
 # COPY --from=builder /app/next /usr/share/nginx/html
 RUN rm -rf /etc/nginx/conf.d
-COPY conf/dev /etc/nginx
+COPY conf /etc/nginx
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

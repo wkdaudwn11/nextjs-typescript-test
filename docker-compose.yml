@@ -1,15 +1,8 @@
-version: "3.7"
+version: "3"
 services:
-  app:
-    container_name: app
-    build:
-      context: .
-      dockerfile: Dockerfile
-    volumes:
-      - ".:/app"
-      - "/app/node_modules"
+  nextjs:
+    build: ./
+  nginx:
+    build: ./nginx
     ports:
-      - "80:80"
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
+      - 80:80
